@@ -1,0 +1,1104 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>نظام الإدارة المتكامل</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* إعادة تعيين وتحسين التصميم */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Cairo', sans-serif;
+  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  direction: rtl;
+  min-height: 100vh;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* الهيدر */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+  color: white;
+  padding: 40px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transform: translateX(-100%);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  100% { transform: translateX(100%); }
+}
+
+.header h1 {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  font-weight: 800;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.header p {
+  font-size: 1.3rem;
+  opacity: 0.95;
+  max-width: 700px;
+  margin: 0 auto 20px;
+}
+
+.header .tagline {
+  font-size: 1.1rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-top: 10px;
+}
+
+/* إحصائيات النظام */
+.system-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin: 40px 0;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 25px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  color: white;
+}
+
+.stat-card:hover {
+  transform: translateY(-10px);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+.stat-card i {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.stat-card h3 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.stat-card p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+}
+
+/* بطاقات الوحدات */
+.modules-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 30px;
+  margin-top: 30px;
+}
+
+.module-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+  transition: all 0.4s ease;
+  position: relative;
+}
+
+.module-card:hover {
+  transform: translateY(-15px);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+.module-header {
+  padding: 25px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.module-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transform: translateX(-100%);
+}
+
+.module-card:nth-child(1) .module-header {
+  background: linear-gradient(to right, #4CAF50, #2E7D32);
+}
+
+.module-card:nth-child(2) .module-header {
+  background: linear-gradient(to right, #2196F3, #1976D2);
+}
+
+.module-card:nth-child(3) .module-header {
+  background: linear-gradient(to right, #FF9800, #F57C00);
+}
+
+.module-header h3 {
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  font-weight: 700;
+  position: relative;
+  z-index: 1;
+}
+
+.module-header p {
+  font-size: 1rem;
+  opacity: 0.95;
+  position: relative;
+  z-index: 1;
+}
+
+.module-content {
+  padding: 25px;
+}
+
+.features-list {
+  list-style: none;
+  margin-bottom: 25px;
+}
+
+.features-list li {
+  margin-bottom: 12px;
+  padding-right: 25px;
+  position: relative;
+  color: #555;
+}
+
+.features-list li::before {
+  content: '✓';
+  position: absolute;
+  right: 0;
+  color: #4CAF50;
+  font-weight: bold;
+}
+
+.module-actions {
+  display: flex;
+  gap: 15px;
+}
+
+.module-btn {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  font-family: 'Cairo', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.module-btn.primary {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  color: white;
+}
+
+.module-btn.secondary {
+  background: #f8f9fa;
+  color: #495057;
+  border: 1px solid #dee2e6;
+}
+
+.module-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* قسم المميزات */
+.features-section {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 40px;
+  margin: 50px 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 40px;
+  color: #333;
+}
+
+.section-title h2 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  font-weight: 700;
+}
+
+.section-title p {
+  font-size: 1.2rem;
+  color: #666;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 30px;
+}
+
+.feature-item {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  text-align: center;
+  border-top: 4px solid #6a11cb;
+}
+
+.feature-item:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+.feature-item i {
+  font-size: 2.5rem;
+  color: #6a11cb;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.feature-item h4 {
+  font-size: 1.4rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.feature-item p {
+  color: #666;
+  line-height: 1.7;
+}
+
+/* النشرة الإخبارية */
+.newsletter {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
+  border-radius: 20px;
+  padding: 40px;
+  text-align: center;
+  color: white;
+  margin: 50px 0;
+}
+
+.newsletter h3 {
+  font-size: 2rem;
+  margin-bottom: 15px;
+}
+
+.newsletter p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin-bottom: 25px;
+  max-width: 600px;
+  margin: 0 auto 25px;
+}
+
+.newsletter-form {
+  display: flex;
+  gap: 15px;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.newsletter-form input {
+  flex: 1;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: 'Cairo', sans-serif;
+}
+
+.newsletter-form button {
+  padding: 15px 30px;
+  background: white;
+  color: #6a11cb;
+  border: none;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  transition: all 0.3s ease;
+}
+
+.newsletter-form button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* الفوتر */
+.footer {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 60px;
+  padding: 30px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: white;
+}
+
+.social-icons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+.social-icons a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: white;
+  font-size: 1.2rem;
+  transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+  background: white;
+  color: #6a11cb;
+  transform: translateY(-3px);
+}
+
+/* زر التمرير للأعلى */
+.scroll-top {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: 50px;
+  height: 50px;
+  background: white;
+  color: #6a11cb;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.5rem;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.scroll-top:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* شاشة التحميل */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  color: white;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.spinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* التحسينات للجوال */
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  .header h1 {
+    font-size: 2.2rem;
+  }
+  
+  .header p {
+    font-size: 1.1rem;
+  }
+  
+  .modules-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .module-actions {
+    flex-direction: column;
+  }
+  
+  .newsletter-form {
+    flex-direction: column;
+  }
+  
+  .system-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-links {
+    flex-direction: column;
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .system-stats {
+    grid-template-columns: 1fr;
+  }
+  
+  .module-header h3 {
+    font-size: 1.5rem;
+  }
+  
+  .section-title h2 {
+    font-size: 2rem;
+  }
+  
+  .feature-item {
+    padding: 20px;
+  }
+}
+
+/* أنميشن للبطاقات */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.module-card {
+  animation: fadeInUp 0.6s ease forwards;
+}
+
+.module-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.module-card:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* تأثيرات الكلمات المتحركة */
+.typewriter {
+  overflow: hidden;
+  border-right: 3px solid white;
+  white-space: nowrap;
+  margin: 0 auto;
+  animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+@keyframes blink-caret {
+  from, to { border-color: transparent }
+  50% { border-color: white }
+}
+
+/* بطاقة معلومات النظام */
+.system-info {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 25px;
+  margin: 30px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.info-item i {
+  font-size: 1.5rem;
+  color: #4CAF50;
+}
+
+.info-item span {
+  font-weight: 600;
+}
+
+/* زر الانتقال السريع */
+.quick-actions {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  z-index: 1000;
+}
+
+.quick-action-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  background: white;
+  color: #6a11cb;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quick-action-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* شريط التقدم */
+.progress-bar {
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #4CAF50, #2196F3, #FF9800);
+  border-radius: 3px;
+  animation: progress 2s ease-in-out infinite;
+}
+
+@keyframes progress {
+  0% { width: 0%; }
+  50% { width: 100%; }
+  100% { width: 0%; }
+}
+</style>
+</head>
+<body>
+
+<!-- شاشة التحميل -->
+<div id="loading" class="loading-overlay">
+  <div class="spinner"></div>
+  <h2>جاري تحميل النظام...</h2>
+  <div class="progress-bar">
+    <div class="progress-fill"></div>
+  </div>
+</div>
+
+<!-- زر التمرير للأعلى -->
+<button class="scroll-top" onclick="scrollToTop()">
+  <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- أزرار الانتقال السريع -->
+<div class="quick-actions">
+  <button class="quick-action-btn" onclick="navigateTo('customers.html')" title="العملاء">
+    <i class="fas fa-users"></i>
+  </button>
+  <button class="quick-action-btn" onclick="navigateTo('orders.html')" title="الطلبات">
+    <i class="fas fa-shopping-cart"></i>
+  </button>
+  <button class="quick-action-btn" onclick="navigateTo('maintenance.html')" title="الصيانة">
+    <i class="fas fa-tools"></i>
+  </button>
+</div>
+
+<div class="container">
+  <!-- الهيدر -->
+  <div class="header">
+    <h1><i class="fas fa-cogs"></i> نظام الإدارة المتكامل</h1>
+    <p class="typewriter">الحل الشامل لإدارة أعمالك بكل احترافية وسهولة</p>
+    <p class="tagline">إدارة العملاء، الطلبات، الصيانة - كل شيء في مكان واحد</p>
+  </div>
+
+  <!-- إحصائيات النظام -->
+  <div class="system-stats">
+    <div class="stat-card">
+      <i class="fas fa-users"></i>
+      <h3 id="customers-count">0</h3>
+      <p>عميل نشط</p>
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-shopping-cart"></i>
+      <h3 id="orders-count">0</h3>
+      <p>طلب نشط</p>
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-tools"></i>
+      <h3 id="maintenance-count">0</h3>
+      <p>جهاز تحت الصيانة</p>
+    </div>
+    <div class="stat-card">
+      <i class="fas fa-chart-line"></i>
+      <h3 id="revenue-count">0</h3>
+      <p>إجمالي الإيرادات (ريال)</p>
+    </div>
+  </div>
+
+  <!-- معلومات النظام -->
+  <div class="system-info">
+    <h3 style="margin-bottom: 20px;"><i class="fas fa-info-circle"></i> معلومات النظام</h3>
+    <div class="info-grid">
+      <div class="info-item">
+        <i class="fas fa-sync-alt"></i>
+        <div>
+          <span id="sync-status">جاري التحقق...</span>
+          <p style="font-size: 0.9rem; opacity: 0.8;">حالة المزامنة</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-database"></i>
+        <div>
+          <span id="storage-usage">جاري الحساب...</span>
+          <p style="font-size: 0.9rem; opacity: 0.8;">استخدام التخزين</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-calendar"></i>
+        <div>
+          <span id="today-date">--/--/----</span>
+          <p style="font-size: 0.9rem; opacity: 0.8;">التاريخ الحالي</p>
+        </div>
+      </div>
+      <div class="info-item">
+        <i class="fas fa-clock"></i>
+        <div>
+          <span id="current-time">--:--</span>
+          <p style="font-size: 0.9rem; opacity: 0.8;">الوقت الحالي</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- وحدات النظام -->
+  <div class="section-title">
+    <h2><i class="fas fa-th-large"></i> وحدات النظام</h2>
+    <p>اختر الوحدة التي تريد إدارتها أو تصفح جميع الإحصائيات</p>
+  </div>
+
+  <div class="modules-grid">
+    <!-- وحدة العملاء -->
+    <div class="module-card">
+      <div class="module-header">
+        <h3><i class="fas fa-users"></i> إدارة العملاء</h3>
+        <p>إدارة بيانات العملاء وتتبع معلوماتهم</p>
+      </div>
+      <div class="module-content">
+        <ul class="features-list">
+          <li>إضافة وتعديل وحذف العملاء</li>
+          <li>بحث متقدم في قاعدة العملاء</li>
+          <li>تقسيم العملاء حسب النوع</li>
+          <li>مزامنة البيانات مع السحابة</li>
+          <li>تقارير وإحصائيات مفصلة</li>
+        </ul>
+        <div class="module-actions">
+          <a href="customers.html" class="module-btn primary">
+            <i class="fas fa-play-circle"></i> فتح الوحدة
+          </a>
+          <button class="module-btn secondary" onclick="showStats('customers')">
+            <i class="fas fa-chart-bar"></i> الإحصائيات
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- وحدة الطلبات -->
+    <div class="module-card">
+      <div class="module-header">
+        <h3><i class="fas fa-shopping-cart"></i> إدارة الطلبات</h3>
+        <p>إدارة وتتبع طلبات العملاء</p>
+      </div>
+      <div class="module-content">
+        <ul class="features-list">
+          <li>إنشاء وتعديل الطلبات</li>
+          <li>تتبع حالة الطلب والدفع</li>
+          <li>فواتير وتقارير المبيعات</li>
+          <li>مزامنة مع نظام العملاء</li>
+          <li>إحصائيات الإيرادات</li>
+        </ul>
+        <div class="module-actions">
+          <a href="orders.html" class="module-btn primary">
+            <i class="fas fa-play-circle"></i> فتح الوحدة
+          </a>
+          <button class="module-btn secondary" onclick="showStats('orders')">
+            <i class="fas fa-chart-bar"></i> الإحصائيات
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- وحدة الصيانة -->
+    <div class="module-card">
+      <div class="module-header">
+        <h3><i class="fas fa-tools"></i> إدارة الصيانة</h3>
+        <p>إدارة أجهزة الصيانة وتتبع حالتها</p>
+      </div>
+      <div class="module-content">
+        <ul class="features-list">
+          <li>استلام وتسليم أجهزة الصيانة</li>
+          <li>تتبع حالة كل جهاز</li>
+          <li>إدارة التكاليف والأولوية</li>
+          <li>ربط مع بيانات العملاء</li>
+          <li>تقارير الصيانة</li>
+        </ul>
+        <div class="module-actions">
+          <a href="maintenance.html" class="module-btn primary">
+            <i class="fas fa-play-circle"></i> فتح الوحدة
+          </a>
+          <button class="module-btn secondary" onclick="showStats('maintenance')">
+            <i class="fas fa-chart-bar"></i> الإحصائيات
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- مميزات النظام -->
+  <div class="features-section">
+    <div class="section-title">
+      <h2><i class="fas fa-star"></i> مميزات النظام</h2>
+      <p>اكتشف لماذا نظامنا هو الخيار الأمثل لإدارة أعمالك</p>
+    </div>
+    
+    <div class="features-grid">
+      <div class="feature-item">
+        <i class="fas fa-bolt"></i>
+        <h4>سرعة فائقة</h4>
+        <p>تصميم سريع الاستجابة يعمل بكفاءة حتى على الأجهزة الضعيفة</p>
+      </div>
+      
+      <div class="feature-item">
+        <i class="fas fa-cloud"></i>
+        <h4>مزامنة ذكية</h4>
+        <p>تخزين محلي مع مزامنة تلقائية مع السحابة عند الاتصال</p>
+      </div>
+      
+      <div class="feature-item">
+        <i class="fas fa-mobile-alt"></i>
+        <h4>تصميم متجاوب</h4>
+        <p>يعمل على جميع الأجهزة من الجوال إلى الكمبيوتر المكتبي</p>
+      </div>
+      
+      <div class="feature-item">
+        <i class="fas fa-shield-alt"></i>
+        <h4>أمان وحماية</h4>
+        <p>بياناتك محمية ومشفرة مع نسخ احتياطي تلقائي</p>
+      </div>
+      
+      <div class="feature-item">
+        <i class="fas fa-chart-pie"></i>
+        <h4>تقارير مفصلة</h4>
+        <p>إحصائيات وتقارير تفصيلية لجميع جوانب العمل</p>
+      </div>
+      
+      <div class="feature-item">
+        <i class="fas fa-headset"></i>
+        <h4>دعم فني</h4>
+        <p>دعم فني متكامل مع أدلة استخدام مفصلة</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- النشرة الإخبارية -->
+  <div class="newsletter">
+    <h3><i class="fas fa-newspaper"></i> اشترك في نشرتنا</h3>
+    <p>اشترك للحصول على آخر التحديثات والنصائح في إدارة الأعمال</p>
+    <div class="newsletter-form">
+      <input type="email" placeholder="أدخل بريدك الإلكتروني">
+      <button onclick="subscribeNewsletter()">
+        <i class="fas fa-paper-plane"></i> اشترك الآن
+      </button>
+    </div>
+  </div>
+
+  <!-- الفوتر -->
+  <div class="footer">
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+      <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-youtube"></i></a>
+    </div>
+    
+    <div class="footer-links">
+      <a href="#">سياسة الخصوصية</a>
+      <a href="#">شروط الاستخدام</a>
+      <a href="#">اتصل بنا</a>
+      <a href="#">الدعم الفني</a>
+      <a href="#">عن النظام</a>
+    </div>
+    
+    <p>© 2025 نظام الإدارة المتكامل. جميع الحقوق محفوظة.</p>
+    <p style="font-size: 0.9rem; margin-top: 10px; opacity: 0.7;">
+      تم التطوير بواسطة <strong>فريق التطوير المتكامل</strong>
+    </p>
+  </div>
+</div>
+
+<!-- مودال الإحصائيات -->
+<div id="stats-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-header">
+      <h3><i class="fas fa-chart-bar"></i> إحصائيات مفصلة</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div id="stats-content">
+        <p>جاري تحميل الإحصائيات...</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">إغلاق</button>
+      <button class="btn btn-primary" onclick="exportStats()">
+        <i class="fas fa-download"></i> تصدير التقرير
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ========== تهيئة الصفحة ==========
+document.addEventListener('DOMContentLoaded', function() {
+  initDashboard();
+});
+
+function initDashboard() {
+  // إخفاء شاشة التحميل بعد 2 ثانية
+  setTimeout(() => {
+    document.getElementById('loading').style.display = 'none';
+    
+    // تحميل الإحصائيات
+    loadStatistics();
+    
+    // تحديث الوقت والتاريخ
+    updateDateTime();
+    
+    // تحديث حالة النظام
+    updateSystemStatus();
+    
+    // إعداد الساعة
+    setInterval(updateDateTime, 1000);
+    
+    // إعداد تحديث الإحصائيات كل 30 ثانية
+    setInterval(loadStatistics, 30000);
+  }, 2000);
+  
+  // إعداد التمرير
+  setupScroll();
+}
+
+// ========== إحصائيات النظام ==========
+async function loadStatistics() {
+  try {
+    // محاولة جلب البيانات المحلية
+    const customersData = localStorage.getItem('customers_data');
+    const ordersData = localStorage.getItem('orders_data');
+    const maintenanceData = localStorage.getItem('maintenance_data');
+    
+    let customersCount = 0;
+    let ordersCount = 0;
+    let maintenanceCount = 0;
+    let revenue = 0;
+    
+    // حساب إحصائيات العملاء
+    if (customersData) {
+      const customers = JSON.parse(customersData);
+      customersCount = customers.length;
+    }
+    
+    // حساب إحصائيات الطلبات
+    if (ordersData) {
+      const orders = JSON.parse(ordersData);
+      ordersCount = orders.length;
+      revenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+    }
+    
+    // حساب إحصائيات الصيانة
+    if (maintenanceData) {
+      const maintenance = JSON.parse(maintenanceData);
+      maintenanceCount = maintenance.length;
+    }
+    
+    // تحديث العرض
+    document.getElementById('customers-count').textContent = formatNumber(customersCount);
+    document.getElementById('orders-count').textContent = formatNumber(ordersCount);
+    document.getElementById('maintenance-count').textContent = formatNumber(maintenanceCount);
+    document.getElementById('revenue-count').textContent = formatCurrency(revenue);
+    
+  } catch (error) {
+    console.error('خطأ في تحميل الإحصائيات:', error);
+    
+    // عرض بيانات افتراضية في حالة الخطأ
+    document.getElementById('customers-count').textContent = '0';
+    document.getElementById('orders-count').textContent = '0';
+    document.getElementById('maintenance-count').textContent = '0';
+    document.getElementById('revenue-count').textContent = '0 ر.س';
+  }
+}
+
+// ========== معلومات النظام ==========
+function updateDateTime() {
+  const now = new Date();
+  const date = now.toLocaleDateString('ar-EG', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  
+  const time = now.toLocaleTimeString('ar-EG', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  });
+  
+  document.getElementById('today-date').textContent = date;
+  document.getElementById('current-time').textContent = time;
+}
+
+function updateSystemStatus() {
+  const isOnline = navigator.onLine;
+  
+  // تحديث حالة المزامنة
+  const syncStatus = document.getElementById('sync-status');
+  if (isOnline) {
+    syncStatus.textContent = 'متصل ومتزامن';
+    syncStatus.style.color = '#4CAF50';
+  } else {
+    syncStatus.textContent = 'غير متصل';
+    syncStatus.style.color = '#f44336';
+  }
+  
+  // حساب استخدام التخزين
+  calculateStorageUsage();
+}
+
+function calculateStorageUsage() {
+  let total = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    const value = localStorage.getItem(key);
+    total += key.length + value.length;
+  }
+  
+  const usageInKB = (total / 1024).toFixed(2);
+  const usageInMB = (total / (1024 * 1024)).toFixed(2);
+  
+  let usageText;
+  if (total < 1024) {
+    usageText = `${total} بايت`;
+  } else if (total < 1024 * 1024) {
+    usageText = `${usageInKB} كيلوبايت`;
+  } else {
+    usageText = `${usageInMB} ميجابايت`;
+  }
+  
+  document.getElementById('storage-usage').textContent = usageText;
+}
+
+// =

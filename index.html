@@ -1,0 +1,23 @@
+<script>
+// تسجيل Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/service-worker.js')
+      .then(registration => {
+        console.log('✅ Service Worker مسجل بنجاح:', registration.scope);
+      })
+      .catch(error => {
+        console.error('❌ فشل تسجيل Service Worker:', error);
+      });
+  });
+}
+
+// تفعيل المزامنة في الخلفية
+if ('sync' in registration) {
+  navigator.serviceWorker.ready.then(registration => {
+    registration.sync.register('sync-data')
+      .then(() => console.log('✅ المزامنة في الخلفية مفعلة'))
+      .catch(() => console.log('❌ فشل تفعيل المزامنة في الخلفية'));
+  });
+}
+</script>

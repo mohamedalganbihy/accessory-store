@@ -1,0 +1,983 @@
+<!doctype html>
+<html lang="ar">
+<head>
+<meta charset="utf-8">
+<title>إدارة الصيانة</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+/* نفس الـ CSS السابق - احتفظ به كما هو */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Cairo', sans-serif; background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%); direction: rtl; min-height: 100vh; padding: 20px; color: #333; }
+/* ... باقي الـ CSS ... */
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1><i class="fas fa-tools"></i> نظام إدارة الصيانة</h1>
+    <p>إدارة أجهزة الصيانة وتتبع حالة كل جهاز</p>
+  </div>
+  
+  <div class="nav-menu">
+    <a href="customers.html" class="nav-btn"><i class="fas fa-user-plus"></i> إدارة العملاء</a>
+    <a href="orders.html" class="nav-btn"><i class="fas fa-shopping-cart"></i> إدارة الطلبات</a>
+    <a href="maintenance.html" class="nav-btn active"><i class="fas fa-tools"></i> إدارة الصيانة</a>
+  </div>
+  
+  <div class="content-container">
+    <div class="tabs-header">
+      <button class="tab-btn active" data-tab="add-maintenance-tab">
+        <i class="fas fa-tools"></i> استلام جهاز جديد
+      </button>
+      <button class="tab-btn" data-tab="view-maintenance-tab">
+        <i class="fas fa-list"></i> عرض جميع الأجهزة
+      </button>
+      <button class="tab-btn" data-tab="sync-tab">
+        <i class="fas fa-sync-alt"></i> المزامنة
+      </button>
+    </div>
+    
+    <!-- تبويب استلام جهاز للصيانة -->
+    <div id="add-maintenance-tab" class="tab-content active">
+      <div class="form-container">
+        <h3 class="form-title"><i class="fas fa-tools"></i> استلام جهاز للصيانة</h3>
+        <div id="maintenance-alert" class="alert" style="display: none;"></div>
+        <div class="form-row">
+          <div class="form-group"><label for="maintenance-customer"><i class="fas fa-user"></i> اختر العميل *</label><select id="maintenance-customer"><option value="">-- اختر العميل --</option></select></div>
+          <div class="form-group"><label for="maintenance-date"><i class="fas fa-calendar"></i> تاريخ الاستلام *</label><input type="date" id="maintenance-date"></div>
+          <div class="form-group"><label for="maintenance-expected-date"><i class="fas fa-calendar-alt"></i> تاريخ التسليم المتوقع</label><input type="date" id="maintenance-expected-date"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="maintenance-device-type"><i class="fas fa-laptop"></i> نوع الجهاز *</label>
+            <select id="maintenance-device-type">
+              <option value="">-- اختر نوع الجهاز --</option>
+              <option value="لابتوب">لابتوب</option><option value="كمبيوتر مكتبي">كمبيوتر مكتبي</option>
+              <option value="هاتف محمول">هاتف محمول</option><option value="تابلت">تابلت</option>
+              <option value="طابعة">طابعة</option><option value="شاشة">شاشة</option>
+              <option value="أخرى">أخرى</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="maintenance-device-brand"><i class="fas fa-tag"></i> ماركة الجهاز</label><input type="text" id="maintenance-device-brand" placeholder="أدخل ماركة الجهاز"></div>
+          <div class="form-group"><label for="maintenance-device-model"><i class="fas fa-microchip"></i> موديل الجهاز</label><input type="text" id="maintenance-device-model" placeholder="أدخل موديل الجهاز"></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="grid-column: 1 / -1;"><label for="maintenance-problem"><i class="fas fa-exclamation-triangle"></i> وصف المشكلة *</label><textarea id="maintenance-problem" placeholder="صف المشكلة التي يعاني منها الجهاز بالتفصيل..."></textarea></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label for="maintenance-status"><i class="fas fa-info-circle"></i> حالة الصيانة</label>
+            <select id="maintenance-status">
+              <option value="مستلم">مستلم</option><option value="قيد التشخيص">قيد التشخيص</option>
+              <option value="قيد الإصلاح">قيد الإصلاح</option><option value="جاهز للتسليم">جاهز للتسليم</option>
+              <option value="مسلم">مسلم</option>
+            </select>
+          </div>
+          <div class="form-group"><label for="maintenance-cost"><i class="fas fa-money-bill-wave"></i> التكلفة المتوقعة (ريال)</label><input type="number" id="maintenance-cost" placeholder="أدخل التكلفة المتوقعة"></div>
+          <div class="form-group"><label for="maintenance-priority"><i class="fas fa-exclamation-circle"></i> أولوية الصيانة</label><select id="maintenance-priority"><option value="عادية">عادية</option><option value="متوسطة">متوسطة</option><option value="عاجلة">عاجلة</option></select></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group" style="grid-column: 1 / -1;"><label for="maintenance-notes"><i class="fas fa-sticky-note"></i> ملاحظات إضافية</label><textarea id="maintenance-notes" placeholder="أي ملاحظات إضافية عن الصيانة..."></textarea></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="clearMaintenanceForm()"><i class="fas fa-eraser"></i> مسح النموذج</button>
+          <button class="btn btn-warning" onclick="addMaintenance()"><i class="fas fa-tools"></i> استلام الجهاز</button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- تبويب عرض الكل -->
+    <div id="view-maintenance-tab" class="tab-content">
+      <div class="data-container">
+        <div class="search-box-container">
+          <div class="search-icon"><i class="fas fa-search"></i></div>
+          <input type="text" class="search-box" id="search-input" placeholder="ابحث عن جهاز صيانة بالعميل أو نوع الجهاز...">
+        </div>
+        <div class="form-actions" style="margin-bottom: 20px;">
+          <button class="btn btn-primary" onclick="loadLocalMaintenance()"><i class="fas fa-sync-alt"></i> تحديث القائمة</button>
+          <button class="btn btn-success" onclick="syncAllData()"><i class="fas fa-cloud-upload-alt"></i> مزامنة مع السحابة</button>
+        </div>
+        <div class="stats-container">
+          <div class="stat-card"><h3 id="total-maintenance">0</h3><p>إجمالي الأجهزة</p></div>
+          <div class="stat-card"><h3 id="received-maintenance">0</h3><p>أجهزة مستلمة</p></div>
+          <div class="stat-card"><h3 id="repair-maintenance">0</h3><p>أجهزة قيد الإصلاح</p></div>
+          <div class="stat-card"><h3 id="ready-maintenance">0</h3><p>أجهزة جاهزة</p></div>
+        </div>
+        <div class="form-container">
+          <h3 class="form-title"><i class="fas fa-tools"></i> قائمة أجهزة الصيانة</h3>
+          <div id="sync-status" class="alert alert-info" style="display: none;"></div>
+          <div class="maintenance-container" id="maintenance-container"></div>
+          <div id="no-maintenance" class="no-data" style="display: none;"><i class="fas fa-tools"></i><p>لا توجد أجهزة مسجلة للصيانة بعد</p></div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- تبويب المزامنة -->
+    <div id="sync-tab" class="tab-content">
+      <div class="form-container">
+        <h3 class="form-title"><i class="fas fa-sync-alt"></i> إدارة المزامنة</h3>
+        <div id="sync-alert" class="alert" style="display: none;"></div>
+        
+        <div class="form-row">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label><i class="fas fa-info-circle"></i> حالة المزامنة</label>
+            <div class="alert alert-info" id="sync-summary">
+              <i class="fas fa-database"></i>
+              <span>جاري تحميل حالة المزامنة...</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="stats-container">
+          <div class="stat-card">
+            <h3 id="local-count">0</h3>
+            <p>السجلات المحلية</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="pending-sync">0</h3>
+            <p>في انتظار المزامنة</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="last-sync">--</h3>
+            <p>آخر مزامنة</p>
+          </div>
+          <div class="stat-card">
+            <h3 id="online-status"><i class="fas fa-wifi"></i></h3>
+            <p>حالة الاتصال</p>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-cloud-upload-alt"></i> رفع البيانات للسحابة</label>
+            <button class="btn btn-success" onclick="uploadToCloud()" style="width: 100%;">
+              <i class="fas fa-upload"></i> رفع البيانات للسحابة
+            </button>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-cloud-download-alt"></i> جلب البيانات من السحابة</label>
+            <button class="btn btn-primary" onclick="downloadFromCloud()" style="width: 100%;">
+              <i class="fas fa-download"></i> جلب البيانات من السحابة
+            </button>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label><i class="fas fa-cogs"></i> إعدادات المزامنة التلقائية</label>
+            <div style="display: flex; gap: 15px; align-items: center; margin-top: 10px;">
+              <input type="checkbox" id="auto-sync" checked>
+              <label for="auto-sync">المزامنة التلقائية عند الاتصال بالإنترنت</label>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center; margin-top: 10px;">
+              <input type="checkbox" id="background-sync" checked>
+              <label for="background-sync">المزامنة في الخلفية</label>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group" style="grid-column: 1 / -1;">
+            <label><i class="fas fa-history"></i> سجل المزامنة</label>
+            <div id="sync-log" style="background: #f5f5f5; border-radius: 10px; padding: 15px; max-height: 200px; overflow-y: auto; margin-top: 10px;">
+              <p>جاري تحميل سجل المزامنة...</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button class="btn btn-secondary" onclick="clearSyncLog()"><i class="fas fa-trash"></i> مسح السجل</button>
+          <button class="btn btn-danger" onclick="resetLocalData()"><i class="fas fa-redo"></i> إعادة تعيين البيانات المحلية</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer">
+    <p>جميع الحقوق محفوظة © 2025 | نظام إدارة الصيانة</p>
+    <p id="connection-status" style="margin-top: 10px; font-size: 0.8rem;"></p>
+  </div>
+</div>
+
+<!-- نافذة تحديث الحالة -->
+<div id="status-modal" class="modal-overlay" style="display: none;">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3><i class="fas fa-sync-alt"></i> تحديث حالة الصيانة</h3>
+      <button class="modal-close" onclick="closeStatusModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label for="status-select"><i class="fas fa-info-circle"></i> حالة الصيانة الجديدة</label>
+        <select id="status-select" class="form-group">
+          <option value="مستلم">مستلم</option>
+          <option value="قيد التشخيص">قيد التشخيص</option>
+          <option value="قيد الإصلاح">قيد الإصلاح</option>
+          <option value="جاهز للتسليم">جاهز للتسليم</option>
+          <option value="مسلم">مسلم</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="status-cost"><i class="fas fa-money-bill-wave"></i> التكلفة النهائية (ريال)</label>
+        <input type="number" id="status-cost" placeholder="أدخل التكلفة النهائية">
+      </div>
+      <div class="form-group">
+        <label for="status-notes"><i class="fas fa-sticky-note"></i> ملاحظات إضافية</label>
+        <textarea id="status-notes" placeholder="أي ملاحظات إضافية..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeStatusModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="saveStatusUpdate()">حفظ التغييرات</button>
+    </div>
+  </div>
+</div>
+
+<div id="loading-overlay" class="loading-overlay" style="display: none;">
+  <div class="spinner"></div>
+  <p id="loading-message">جاري معالجة طلبك...</p>
+</div>
+
+<script>
+// ========== الإعدادات التلقائية ==========
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbydFIBpXL6vRfYOt7R5zHfXb-FouKQ_H_ASw_GPf5oCFZW-e-cCtcOoDPfoVFFWz8Y/exec';
+
+// ========== تخزين محلي ==========
+const STORAGE_KEYS = {
+  CUSTOMERS: 'maintenance_customers',
+  MAINTENANCE: 'maintenance_records',
+  SYNC_QUEUE: 'sync_queue',
+  SYNC_LOG: 'sync_log',
+  LAST_SYNC: 'last_sync_time'
+};
+
+// ========== البيانات ==========
+let customers = [];
+let maintenance = [];
+let syncQueue = [];
+let currentMaintenanceId = null;
+let isOnline = navigator.onLine;
+
+// ========== عند تحميل الصفحة ==========
+document.addEventListener('DOMContentLoaded', function() {
+  // تعيين تاريخ اليوم
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('maintenance-date').value = today;
+  
+  // تهيئة التبويبات
+  initTabs();
+  
+  // إضافة مستمع للبحث
+  document.getElementById('search-input').addEventListener('input', updateMaintenanceView);
+  
+  // مراقبة حالة الاتصال
+  window.addEventListener('online', handleOnlineStatus);
+  window.addEventListener('offline', handleOnlineStatus);
+  updateConnectionStatus();
+  
+  // تحميل البيانات من التخزين المحلي
+  loadFromLocalStorage();
+  
+  // بدء المزامنة التلقائية
+  setTimeout(() => {
+    if (isOnline && document.getElementById('auto-sync')?.checked) {
+      autoSync();
+    }
+  }, 2000);
+  
+  // تحديث حالة المزامنة كل 30 ثانية
+  setInterval(updateSyncStatus, 30000);
+});
+
+// ========== معالجة حالة الاتصال ==========
+function handleOnlineStatus() {
+  isOnline = navigator.onLine;
+  updateConnectionStatus();
+  
+  if (isOnline) {
+    showAlert('maintenance-alert', 'تم استعادة الاتصال بالإنترنت', 'success');
+    if (document.getElementById('auto-sync')?.checked) {
+      autoSync();
+    }
+  } else {
+    showAlert('maintenance-alert', 'أنت غير متصل بالإنترنت. البيانات مخزنة محلياً', 'warning');
+  }
+}
+
+function updateConnectionStatus() {
+  const statusElement = document.getElementById('connection-status');
+  const onlineStatusElement = document.getElementById('online-status');
+  
+  if (isOnline) {
+    statusElement.innerHTML = '<i class="fas fa-wifi"></i> متصل بالإنترنت';
+    statusElement.style.color = '#4CAF50';
+    onlineStatusElement.innerHTML = '<i class="fas fa-wifi" style="color: #4CAF50;"></i>';
+  } else {
+    statusElement.innerHTML = '<i class="fas fa-wifi-slash"></i> غير متصل بالإنترنت';
+    statusElement.style.color = '#f44336';
+    onlineStatusElement.innerHTML = '<i class="fas fa-wifi-slash" style="color: #f44336;"></i>';
+  }
+}
+
+// ========== التخزين المحلي ==========
+function loadFromLocalStorage() {
+  try {
+    // تحميل العملاء
+    const customersData = localStorage.getItem(STORAGE_KEYS.CUSTOMERS);
+    customers = customersData ? JSON.parse(customersData) : [];
+    
+    // تحميل الصيانة
+    const maintenanceData = localStorage.getItem(STORAGE_KEYS.MAINTENANCE);
+    maintenance = maintenanceData ? JSON.parse(maintenanceData) : [];
+    
+    // تحميل قائمة المزامنة
+    const queueData = localStorage.getItem(STORAGE_KEYS.SYNC_QUEUE);
+    syncQueue = queueData ? JSON.parse(queueData) : [];
+    
+    // تحديث الواجهة
+    updateCustomersSelect();
+    updateMaintenanceView();
+    updateSyncStatus();
+    
+    console.log('✅ تم تحميل البيانات من التخزين المحلي');
+  } catch (error) {
+    console.error('❌ خطأ في تحميل البيانات المحلية:', error);
+    showAlert('maintenance-alert', 'خطأ في تحميل البيانات المحلية', 'error');
+  }
+}
+
+function saveToLocalStorage() {
+  try {
+    localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+    localStorage.setItem(STORAGE_KEYS.MAINTENANCE, JSON.stringify(maintenance));
+    localStorage.setItem(STORAGE_KEYS.SYNC_QUEUE, JSON.stringify(syncQueue));
+    
+    // تحديث حالة المزامنة
+    updateSyncStatus();
+  } catch (error) {
+    console.error('❌ خطأ في حفظ البيانات المحلية:', error);
+  }
+}
+
+// ========== إضافة صيانة جديدة (محلي أولاً) ==========
+function addMaintenance() {
+  const customerId = document.getElementById('maintenance-customer').value;
+  const deviceType = document.getElementById('maintenance-device-type').value;
+  const problem = document.getElementById('maintenance-problem').value.trim();
+  
+  if (!customerId || !deviceType || !problem) {
+    showAlert('maintenance-alert', 'يرجى اختيار العميل ونوع الجهاز وكتابة المشكلة', 'error');
+    return;
+  }
+  
+  const customer = customers.find(c => c.ID === customerId);
+  if (!customer) {
+    showAlert('maintenance-alert', 'العميل غير موجود', 'error');
+    return;
+  }
+  
+  // إنشاء سجل صيانة جديد
+  const newMaintenance = {
+    ID: generateId(),
+    customerId,
+    customerName: customer.الاسم || '',
+    customerPhone: customer.الهاتف || '',
+    date: document.getElementById('maintenance-date').value,
+    expectedDate: document.getElementById('maintenance-expected-date').value,
+    deviceType,
+    deviceBrand: document.getElementById('maintenance-device-brand').value.trim(),
+    deviceModel: document.getElementById('maintenance-device-model').value.trim(),
+    problem,
+    status: document.getElementById('maintenance-status').value,
+    cost: parseFloat(document.getElementById('maintenance-cost').value) || 0,
+    priority: document.getElementById('maintenance-priority').value,
+    notes: document.getElementById('maintenance-notes').value.trim(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    synced: false
+  };
+  
+  // إضافة للقائمة المحلية
+  maintenance.push(newMaintenance);
+  
+  // إضافة لقائمة المزامنة
+  addToSyncQueue('addMaintenance', newMaintenance);
+  
+  // حفظ محلياً
+  saveToLocalStorage();
+  
+  // تحديث الواجهة
+  updateMaintenanceView();
+  clearMaintenanceForm();
+  
+  showAlert('maintenance-alert', 'تم استلام الجهاز بنجاح!', 'success');
+  
+  // محاولة المزامنة الفورية إذا كان اتصال متاح
+  if (isOnline && document.getElementById('auto-sync')?.checked) {
+    autoSync();
+  }
+}
+
+// ========== تحديث حالة الصيانة ==========
+function updateMaintenanceStatus(maintenanceId) {
+  const item = maintenance.find(m => m.ID === maintenanceId);
+  if (!item) return;
+  
+  openStatusModal(maintenanceId);
+}
+
+function saveStatusUpdate() {
+  if (!currentMaintenanceId) return;
+  
+  const newStatus = document.getElementById('status-select').value;
+  const newCost = parseFloat(document.getElementById('status-cost').value) || 0;
+  const newNotes = document.getElementById('status-notes').value.trim();
+  
+  const itemIndex = maintenance.findIndex(m => m.ID === currentMaintenanceId);
+  if (itemIndex === -1) return;
+  
+  // تحديث البيانات المحلية
+  maintenance[itemIndex].status = newStatus;
+  maintenance[itemIndex].cost = newCost;
+  if (newNotes) maintenance[itemIndex].notes = newNotes;
+  maintenance[itemIndex].updatedAt = new Date().toISOString();
+  maintenance[itemIndex].synced = false;
+  
+  // إضافة للتحديث في قائمة المزامنة
+  addToSyncQueue('updateMaintenance', maintenance[itemIndex]);
+  
+  // حفظ محلياً
+  saveToLocalStorage();
+  
+  // تحديث الواجهة
+  updateMaintenanceView();
+  closeStatusModal();
+  
+  showAlert('maintenance-alert', `تم تحديث الحالة إلى "${newStatus}"`, 'success');
+  
+  // محاولة المزامنة
+  if (isOnline && document.getElementById('auto-sync')?.checked) {
+    autoSync();
+  }
+}
+
+// ========== المزامنة مع السحابة ==========
+async function syncAllData() {
+  if (!isOnline) {
+    showAlert('maintenance-alert', 'غير متصل بالإنترنت. لا يمكن المزامنة', 'error');
+    return;
+  }
+  
+  showLoading('جاري مزامنة البيانات مع السحابة...');
+  
+  try {
+    // 1. تحميل أحدث البيانات من السحابة
+    await downloadFromCloud();
+    
+    // 2. رفع البيانات المحلية للسحابة
+    await uploadToCloud();
+    
+    // 3. تحديث حالة المزامنة
+    updateSyncStatus();
+    
+    showAlert('maintenance-alert', 'تمت المزامنة بنجاح!', 'success');
+  } catch (error) {
+    showAlert('maintenance-alert', 'فشلت المزامنة: ' + error.message, 'error');
+  }
+  
+  hideLoading();
+}
+
+async function uploadToCloud() {
+  if (!isOnline) {
+    showAlert('sync-alert', 'غير متصل بالإنترنت', 'error');
+    return;
+  }
+  
+  if (syncQueue.length === 0) {
+    showAlert('sync-alert', 'لا توجد بيانات بحاجة للمزامنة', 'info');
+    return;
+  }
+  
+  showLoading('جاري رفع البيانات للسحابة...');
+  
+  let successCount = 0;
+  let errorCount = 0;
+  
+  try {
+    for (const syncItem of [...syncQueue]) {
+      try {
+        const response = await callGoogleScript(syncItem.action, syncItem.data);
+        
+        if (response.success) {
+          // تحديث حالة المزامنة للعنصر المحلي
+          const itemIndex = maintenance.findIndex(m => m.ID === syncItem.data.ID);
+          if (itemIndex !== -1) {
+            maintenance[itemIndex].synced = true;
+          }
+          
+          // إزالة من قائمة الانتظار
+          const queueIndex = syncQueue.findIndex(q => q.id === syncItem.id);
+          if (queueIndex !== -1) {
+            syncQueue.splice(queueIndex, 1);
+          }
+          
+          successCount++;
+          
+          // إضافة للسجل
+          addToSyncLog(`✅ تم مزامنة: ${syncItem.action} - ${syncItem.data.ID || ''}`);
+        } else {
+          errorCount++;
+          addToSyncLog(`❌ فشل: ${syncItem.action} - ${response.error || 'خطأ غير معروف'}`);
+        }
+      } catch (error) {
+        errorCount++;
+        addToSyncLog(`❌ خطأ: ${syncItem.action} - ${error.message}`);
+      }
+      
+      // تأخير بسيط بين الطلبات
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    
+    // حفظ التغييرات المحلية
+    saveToLocalStorage();
+    
+    // تحديث وقت آخر مزامنة
+    localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
+    
+    // إظهار النتيجة
+    const message = `تمت مزامنة ${successCount} عنصر بنجاح${errorCount > 0 ? `، فشل ${errorCount} عنصر` : ''}`;
+    showAlert('sync-alert', message, errorCount > 0 ? 'warning' : 'success');
+    
+    // تحديث الواجهة
+    updateMaintenanceView();
+    
+  } catch (error) {
+    showAlert('sync-alert', 'فشل رفع البيانات: ' + error.message, 'error');
+  }
+  
+  hideLoading();
+}
+
+async function downloadFromCloud() {
+  if (!isOnline) {
+    showAlert('sync-alert', 'غير متصل بالإنترنت', 'error');
+    return;
+  }
+  
+  showLoading('جاري جلب أحدث البيانات من السحابة...');
+  
+  try {
+    // جلب أحدث البيانات من السحابة
+    const [customersResponse, maintenanceResponse] = await Promise.all([
+      callGoogleScript('getCustomers'),
+      callGoogleScript('getMaintenance')
+    ]);
+    
+    if (customersResponse.success) {
+      customers = customersResponse.data || [];
+      localStorage.setItem(STORAGE_KEYS.CUSTOMERS, JSON.stringify(customers));
+      updateCustomersSelect();
+    }
+    
+    if (maintenanceResponse.success) {
+      const cloudMaintenance = maintenanceResponse.data || [];
+      
+      // دمج البيانات المحلية مع السحابية
+      maintenance = mergeData(maintenance, cloudMaintenance);
+      
+      // حفظ محلياً
+      localStorage.setItem(STORAGE_KEYS.MAINTENANCE, JSON.stringify(maintenance));
+      
+      // تحديث الواجهة
+      updateMaintenanceView();
+    }
+    
+    // تحديث وقت آخر مزامنة
+    localStorage.setItem(STORAGE_KEYS.LAST_SYNC, new Date().toISOString());
+    
+    showAlert('sync-alert', 'تم جلب أحدث البيانات بنجاح', 'success');
+    addToSyncLog('✅ تم جلب البيانات من السحابة');
+    
+  } catch (error) {
+    showAlert('sync-alert', 'فشل جلب البيانات: ' + error.message, 'error');
+    addToSyncLog(`❌ فشل جلب البيانات: ${error.message}`);
+  }
+  
+  hideLoading();
+}
+
+// ========== دوال المساعدة ==========
+function generateId() {
+  return 'mnt_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+}
+
+function addToSyncQueue(action, data) {
+  const syncItem = {
+    id: generateId(),
+    action,
+    data,
+    timestamp: new Date().toISOString(),
+    attempts: 0
+  };
+  
+  syncQueue.push(syncItem);
+  addToSyncLog(`➕ أضيف للمزامنة: ${action} - ${data.ID || 'جديد'}`);
+  
+  // تحديث واجهة حالة المزامنة
+  updateSyncStatus();
+}
+
+function addToSyncLog(message) {
+  const logs = JSON.parse(localStorage.getItem(STORAGE_KEYS.SYNC_LOG) || '[]');
+  const logEntry = {
+    timestamp: new Date().toISOString(),
+    message
+  };
+  
+  logs.unshift(logEntry); // إضافة في البداية
+  if (logs.length > 50) logs.pop(); // حفظ آخر 50 سجل فقط
+  
+  localStorage.setItem(STORAGE_KEYS.SYNC_LOG, JSON.stringify(logs));
+  
+  // تحديث عرض السجل إذا كان مفتوحاً
+  if (document.getElementById('sync-tab').classList.contains('active')) {
+    updateSyncLogDisplay();
+  }
+}
+
+function updateSyncStatus() {
+  const localCount = maintenance.length;
+  const pendingCount = syncQueue.length;
+  const lastSyncTime = localStorage.getItem(STORAGE_KEYS.LAST_SYNC);
+  
+  document.getElementById('local-count').textContent = localCount;
+  document.getElementById('pending-sync').textContent = pendingCount;
+  document.getElementById('last-sync').textContent = lastSyncTime ? formatRelativeTime(lastSyncTime) : '--';
+  
+  // تحديث حالة المزامنة في تبويب العرض
+  const syncStatusElement = document.getElementById('sync-status');
+  if (pendingCount > 0) {
+    syncStatusElement.innerHTML = `<i class="fas fa-clock"></i> ${pendingCount} عنصر في انتظار المزامنة`;
+    syncStatusElement.className = 'alert alert-warning';
+    syncStatusElement.style.display = 'flex';
+  } else if (lastSyncTime) {
+    syncStatusElement.innerHTML = `<i class="fas fa-check-circle"></i> جميع البيانات محدثة (آخر مزامنة: ${formatRelativeTime(lastSyncTime)})`;
+    syncStatusElement.className = 'alert alert-success';
+    syncStatusElement.style.display = 'flex';
+  } else {
+    syncStatusElement.style.display = 'none';
+  }
+  
+  // تحديث سجل المزامنة
+  updateSyncLogDisplay();
+}
+
+function updateSyncLogDisplay() {
+  const logs = JSON.parse(localStorage.getItem(STORAGE_KEYS.SYNC_LOG) || '[]');
+  const logContainer = document.getElementById('sync-log');
+  
+  if (logs.length === 0) {
+    logContainer.innerHTML = '<p>لا توجد سجلات مزامنة</p>';
+    return;
+  }
+  
+  let html = '';
+  logs.forEach(log => {
+    const time = formatTime(log.timestamp);
+    html += `<p style="margin-bottom: 5px; font-size: 0.9rem;"><span style="color: #666;">${time}</span> - ${log.message}</p>`;
+  });
+  
+  logContainer.innerHTML = html;
+}
+
+function autoSync() {
+  if (!isOnline || syncQueue.length === 0) return;
+  
+  if (document.getElementById('background-sync')?.checked) {
+    // مزامنة في الخلفية بدون إظهار رسائل للمستخدم
+    uploadToCloud().catch(() => {
+      // تجاهل الأخطاء في المزامنة التلقائية
+    });
+  }
+}
+
+function mergeData(localData, cloudData) {
+  const merged = [...localData];
+  
+  cloudData.forEach(cloudItem => {
+    const localIndex = merged.findIndex(localItem => localItem.ID === cloudItem.ID);
+    
+    if (localIndex === -1) {
+      // العنصر موجود فقط في السحابة، نضيفه
+      merged.push({ ...cloudItem, synced: true });
+    } else {
+      // العنصر موجود في كلا المكانين، نأخذ الأحدث
+      const localItem = merged[localIndex];
+      const localTime = new Date(localItem.updatedAt || localItem.createdAt);
+      const cloudTime = new Date(cloudItem.updatedAt || cloudItem.createdAt);
+      
+      if (cloudTime > localTime) {
+        // البيانات السحابية أحدث
+        merged[localIndex] = { ...cloudItem, synced: true };
+      }
+      // إذا كانت البيانات المحلية أحدث، تبقى كما هي
+    }
+  });
+  
+  return merged;
+}
+
+function clearSyncLog() {
+  if (confirm('هل تريد مسح سجل المزامنة؟')) {
+    localStorage.setItem(STORAGE_KEYS.SYNC_LOG, JSON.stringify([]));
+    updateSyncLogDisplay();
+    showAlert('sync-alert', 'تم مسح سجل المزامنة', 'success');
+  }
+}
+
+function resetLocalData() {
+  if (confirm('⚠️ تحذير: هذا سيحذف جميع البيانات المحلية. هل أنت متأكد؟')) {
+    localStorage.clear();
+    customers = [];
+    maintenance = [];
+    syncQueue = [];
+    
+    showAlert('sync-alert', 'تم حذف جميع البيانات المحلية', 'success');
+    
+    // إعادة تحميل الصفحة
+    setTimeout(() => location.reload(), 1500);
+  }
+}
+
+// ========== دوال المساعدة العامة ==========
+function formatRelativeTime(dateString) {
+  const date = new Date(dateString);
+  const now = new Date();
+  const diffMs = now - date;
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+  
+  if (diffMins < 1) return 'الآن';
+  if (diffMins < 60) return `قبل ${diffMins} دقيقة`;
+  if (diffHours < 24) return `قبل ${diffHours} ساعة`;
+  if (diffDays < 7) return `قبل ${diffDays} يوم`;
+  return date.toLocaleDateString('ar-EG');
+}
+
+function formatTime(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ========== بقية الدوال (نفس السابق مع تعديلات بسيطة) ==========
+function initTabs() {
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const tabContents = document.querySelectorAll('.tab-content');
+  
+  tabBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const tabId = this.getAttribute('data-tab');
+      tabBtns.forEach(b => b.classList.remove('active'));
+      tabContents.forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+      
+      if (tabId === 'view-maintenance-tab') {
+        updateMaintenanceView();
+      } else if (tabId === 'sync-tab') {
+        updateSyncStatus();
+      }
+    });
+  });
+}
+
+async function callGoogleScript(action, params = {}) {
+  if (!isOnline) {
+    throw new Error('غير متصل بالإنترنت');
+  }
+  
+  let url = GOOGLE_SCRIPT_URL;
+  const allParams = { action, ...params };
+  const queryString = Object.keys(allParams)
+    .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(allParams[key])}`)
+    .join('&');
+  url += (url.includes('?') ? '&' : '?') + queryString;
+  
+  const response = await fetch(url);
+  if (!response.ok) throw new Error(`فشل الطلب: ${response.status}`);
+  return await response.json();
+}
+
+function updateCustomersSelect() {
+  const select = document.getElementById('maintenance-customer');
+  if (!select) return;
+  
+  select.innerHTML = '<option value="">-- اختر العميل --</option>';
+  
+  customers.forEach(customer => {
+    const option = document.createElement('option');
+    option.value = customer.ID;
+    option.textContent = `${customer.الاسم || ''} - ${customer.الهاتف || ''}`;
+    select.appendChild(option);
+  });
+}
+
+function loadLocalMaintenance() {
+  updateMaintenanceView();
+  showAlert('maintenance-alert', `تم تحميل ${maintenance.length} جهاز صيانة من التخزين المحلي`, 'success');
+}
+
+function updateMaintenanceView() {
+  const searchTerm = document.getElementById('search-input').value.toLowerCase();
+  
+  let filteredMaintenance = maintenance.filter(m => 
+    (m.customerName && m.customerName.toLowerCase().includes(searchTerm)) || 
+    (m.deviceType && m.deviceType.toLowerCase().includes(searchTerm))
+  );
+  
+  document.getElementById('total-maintenance').textContent = filteredMaintenance.length;
+  document.getElementById('received-maintenance').textContent = filteredMaintenance.filter(m => m.status === 'مستلم').length;
+  document.getElementById('repair-maintenance').textContent = filteredMaintenance.filter(m => m.status === 'قيد الإصلاح').length;
+  document.getElementById('ready-maintenance').textContent = filteredMaintenance.filter(m => m.status === 'جاهز للتسليم').length;
+  
+  updateMaintenanceDisplay(filteredMaintenance);
+}
+
+function updateMaintenanceDisplay(filteredMaintenance) {
+  const container = document.getElementById('maintenance-container');
+  const noData = document.getElementById('no-maintenance');
+  
+  if (filteredMaintenance.length === 0) {
+    container.innerHTML = '';
+    noData.style.display = 'block';
+    return;
+  }
+  
+  noData.style.display = 'none';
+  let html = '';
+  
+  filteredMaintenance.forEach(item => {
+    const statusClass = getMaintenanceStatusClass(item.status);
+    const syncIcon = item.synced ? '<i class="fas fa-cloud" style="color: #4CAF50; margin-right: 5px;"></i>' : '<i class="fas fa-exclamation-triangle" style="color: #FF9800; margin-right: 5px;"></i>';
+    
+    html += `
+      <div class="maintenance-card">
+        <div class="maintenance-header">
+          <div class="maintenance-customer">${syncIcon} ${item.customerName || 'غير محدد'}</div>
+          <div class="maintenance-date">${formatDate(item.date)}</div>
+        </div>
+        <div class="maintenance-details">
+          <div class="maintenance-device">
+            <i class="fas fa-laptop"></i> ${item.deviceType || 'غير محدد'}
+            ${item.deviceBrand ? ` - ${item.deviceBrand}` : ''}
+            ${item.deviceModel ? ` - ${item.deviceModel}` : ''}
+          </div>
+          <div class="maintenance-problem">${truncateText(item.problem || '', 100)}</div>
+          <p><strong>الحالة:</strong> <span class="maintenance-status ${statusClass}">${item.status || 'مستلم'}</span></p>
+          ${item.cost > 0 ? `<p><strong>التكلفة:</strong> ${item.cost} ريال</p>` : ''}
+          ${item.expectedDate ? `<p><strong>تاريخ التسليم:</strong> ${formatDate(item.expectedDate)}</p>` : ''}
+          ${item.notes ? `<p><strong>ملاحظات:</strong> ${truncateText(item.notes, 80)}</p>` : ''}
+        </div>
+        <div class="maintenance-actions">
+          <div class="maintenance-cost">${item.cost > 0 ? `${item.cost} ريال` : 'لم تحدد التكلفة'}</div>
+          <div style="display: flex; gap: 10px;">
+            <button class="action-btn update" onclick="updateMaintenanceStatus('${item.ID}')"><i class="fas fa-sync-alt"></i> تحديث</button>
+            ${item.status === 'جاهز للتسليم' || item.status === 'مسلم' ? '' : `<button class="action-btn complete" onclick="completeMaintenance('${item.ID}')"><i class="fas fa-check"></i> إنهاء</button>`}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
+
+function clearMaintenanceForm() {
+  document.getElementById('maintenance-customer').value = '';
+  document.getElementById('maintenance-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('maintenance-expected-date').value = '';
+  document.getElementById('maintenance-device-type').value = '';
+  document.getElementById('maintenance-device-brand').value = '';
+  document.getElementById('maintenance-device-model').value = '';
+  document.getElementById('maintenance-problem').value = '';
+  document.getElementById('maintenance-status').value = 'مستلم';
+  document.getElementById('maintenance-cost').value = '';
+  document.getElementById('maintenance-priority').value = 'عادية';
+  document.getElementById('maintenance-notes').value = '';
+  document.getElementById('maintenance-alert').style.display = 'none';
+}
+
+function openStatusModal(maintenanceId) {
+  const item = maintenance.find(m => m.ID === maintenanceId);
+  if (!item) {
+    showAlert('maintenance-alert', 'لم يتم العثور على الصيانة', 'error');
+    return;
+  }
+  
+  currentMaintenanceId = maintenanceId;
+  
+  document.getElementById('status-select').value = item.status || 'مستلم';
+  document.getElementById('status-cost').value = item.cost || '';
+  document.getElementById('status-notes').value = item.notes || '';
+  
+  document.getElementById('status-modal').style.display = 'flex';
+}
+
+function closeStatusModal() {
+  document.getElementById('status-modal').style.display = 'none';
+  currentMaintenanceId = null;
+}
+
+function showLoading(message) {
+  document.getElementById('loading-message').textContent = message;
+  document.getElementById('loading-overlay').style.display = 'flex';
+}
+
+function hideLoading() {
+  document.getElementById('loading-overlay').style.display = 'none';
+}
+
+function showAlert(elementId, message, type) {
+  const element = document.getElementById(elementId);
+  if (!element) return;
+  
+  element.innerHTML = `<i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i> ${message}`;
+  element.className = `alert alert-${type}`;
+  element.style.display = 'flex';
+  
+  setTimeout(() => {
+    element.style.display = 'none';
+  }, 5000);
+}
+
+function formatDate(dateString) {
+  if (!dateString) return 'غير محدد';
+  try {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('ar-EG');
+  } catch {
+    return dateString;
+  }
+}
+
+function truncateText(text, maxLength) {
+  if (!text) return '';
+  return text.length <= maxLength ? text : text.substring(0, maxLength) + '...';
+}
+
+function getMaintenanceStatusClass(status) {
+  switch(status) {
+    case 'مستلم': return 'status-received';
+    case 'قيد التشخيص': return 'status-diagnosis';
+    case 'قيد الإصلاح': return 'status-repair';
+    case 'جاهز للتسليم': return 'status-ready';
+    case 'مسلم': return 'status-delivered';
+    default: return 'status-received';
+  }
+}
+</script>
+</body>
+</html>

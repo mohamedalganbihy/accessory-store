@@ -1101,4 +1101,399 @@ function calculateStorageUsage() {
   document.getElementById('storage-usage').textContent = usageText;
 }
 
-// =
+// ========== التنقل والإجراءات ==========
+function navigateTo(page) {
+  window.location.href = page;
+}
+
+function showStats(module) {
+  const modal = document.getElementById('stats-modal');
+  const content = document.getElementById('stats-content');
+  
+  let statsHTML = '';
+  
+  switch(module) {
+    case 'customers':
+      statsHTML = getCustomerStats();
+      break;
+    case 'orders':
+      statsHTML = getOrderStats();
+      break;
+    case 'maintenance':
+      statsHTML = getMaintenanceStats();
+      break;
+    default:
+      statsHTML = '<p>لا توجد إحصائيات متاحة</p>';
+  }
+  
+  content.innerHTML = statsHTML;
+  modal.style.display = 'flex';
+}
+
+function getCustomerStats() {
+  try {
+    const customersData = localStorage.getItem('customers_data');
+    if (!customersData) {
+      return '<p>لا توجد بيانات للعملاء</p>';
+    }
+    
+    const customers = JSON.parse(customersData);
+    
+    // تحليل البيانات
+    const totalCustomers = customers.length;
+    const regularCustomers = customers.filter(c => c.type === 'عادي').length;
+    const premiumCustomers = customers.filter(c => c.type === 'مميز').length;
+    const companyCustomers = customers.filter(c => c.type === 'شركة' || c.type === 'مؤسسة').length;
+    
+    // العملاء المضافين هذا الشهر
+    const thisMonth = new Date().getMonth();
+    const thisYear = new Date().getFullYear();
+    const newThisMonth = customers.filter(c => {
+      const date = new Date(c.createdAt || c.registrationDate);
+      return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
+    }).length;
+    
+    return `
+      <div class="stats-details">
+        <h4 style="margin-bottom: 20px; color: #4CAF50;">إحصائيات العملاء</h4>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+          <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+            <h3 style="color: #4CAF50; margin: 0;">${totalCustomers}</h3>
+            <p style="margin: 5px 0 0 0; color: #666;">إجمالي العملاء</p>
+          </div>
+          <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+            <h3 style="color: #2196F3; margin: 0;">${newThisMonth}</h3>
+            <p style="margin: 5px 0 0 0; color: #666;">جدد هذا الشهر</p>
+          </div>
+        </div>
+        
+        <h5 style="margin: 20px 0 10px 0;">التوزيع حسب النوع:</h5>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+          <p>👥 عملاء عاديين: <strong>${regularCustomers}</strong></p>
+          <p>⭐ عملاء مميزين: <strong>${premiumCustomers}</strong></p>
+          <p>🏢 شركات ومؤسسات: <strong>${companyCustomers}</strong></p>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 8px; border-right: 4px solid #4CAF50;">
+          <p style="margin: 0; color: #2e7d32;">
+            <i class="fas fa-lightbulb"></i> 
+            <strong>ملاحظة:</strong> ركز على تحويل العملاء العاديين إلى مميزين لزيادة الأرباح
+          </p>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    return `<p style="color: #f44336;">خطأ في تحميل إحصائيات العملاء: ${error.message}</p>`;
+  }
+}
+
+function getOrderStats() {
+  try {
+    const ordersData = localStorage.getItem('orders_data');
+    if (!ordersData) {
+      return '<p>لا توجد بيانات للطلبات</p>';
+    }
+    
+    const orders = JSON.parse(ordersData);
+    
+    // تحليل البيانات
+    const totalOrders = orders.length;
+    const pendingOrders = orders.filter(o => o.status === 'قيد الانتظار').length;
+    const processingOrders = orders.filter(o => o.status === 'قيد المعالجة').length;
+    const shippedOrders = orders.filter(o => o.status === 'تم الشحن').length;
+    const deliveredOrders = orders.filter(o => o.status === 'تم التسليم').length;
+    const cancelledOrders = orders.filter(o => o.status === 'ملغي').length;
+    
+    const totalRevenue = orders.reduce((sum, order) => sum + (order.total || 0), 0);
+    const avgOrderValue = totalOrders > 0 ? totalRevenue / totalOrders : 0;
+    
+    // الطلبات هذا الشهر
+    const thisMonth = new Date().getMonth();
+    const thisYear = new Date().getFullYear();
+    const ordersThisMonth = orders.filter(o => {
+      const date = new Date(o.createdAt || o.orderDate);
+      return date.getMonth() === thisMonth && date.getFullYear() === thisYear;
+    });
+    
+    const revenueThisMonth = ordersThisMonth.reduce((sum, order) => sum + (order.total || 0), 0);
+    
+    return `
+      <div class="stats-details">
+        <h4 style="margin-bottom: 20px; color: #2196F3;">إحصائيات الطلبات</h4>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+          <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+            <h3 style="color: #2196F3; margin: 0;">${totalOrders}</h3>
+            <p style="margin: 5px 0 0 0; color: #666;">إجمالي الطلبات</p>
+          </div>
+          <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+            <h3 style="color: #4CAF50; margin: 0;">${formatCurrency(totalRevenue)}</h3>
+            <p style="margin: 5px 0 0 0; color: #666;">إجمالي الإيرادات</p>
+          </div>
+        </div>
+        
+        <h5 style="margin: 20px 0 10px 0;">توزيع الطلبات حسب الحالة:</h5>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+          <p>⏳ قيد الانتظار: <strong>${pendingOrders}</strong></p>
+          <p>🔄 قيد المعالجة: <strong>${processingOrders}</strong></p>
+          <p>🚚 تم الشحن: <strong>${shippedOrders}</strong></p>
+          <p>✅ تم التسليم: <strong>${deliveredOrders}</strong></p>
+          <p>❌ ملغية: <strong>${cancelledOrders}</strong></p>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 20px;">
+          <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-right: 4px solid #2196F3;">
+            <h4 style="margin: 0 0 5px 0; color: #1976d2;">${formatCurrency(revenueThisMonth)}</h4>
+            <p style="margin: 0; font-size: 0.9rem; color: #666;">إيرادات هذا الشهر</p>
+          </div>
+          <div style="background: #e8f5e9; padding: 15px; border-radius: 8px; border-right: 4px solid #4CAF50;">
+            <h4 style="margin: 0 0 5px 0; color: #2e7d32;">${formatCurrency(avgOrderValue)}</h4>
+            <p style="margin: 0; font-size: 0.9rem; color: #666;">متوسط قيمة الطلب</p>
+          </div>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    return `<p style="color: #f44336;">خطأ في تحميل إحصائيات الطلبات: ${error.message}</p>`;
+  }
+}
+
+function getMaintenanceStats() {
+  try {
+    const maintenanceData = localStorage.getItem('maintenance_data');
+    if (!maintenanceData) {
+      return '<p>لا توجد بيانات للصيانة</p>';
+    }
+    
+    const maintenance = JSON.parse(maintenanceData);
+    
+    // تحليل البيانات
+    const totalMaintenance = maintenance.length;
+    const receivedMaintenance = maintenance.filter(m => m.status === 'مستلم').length;
+    const diagnosisMaintenance = maintenance.filter(m => m.status === 'قيد التشخيص').length;
+    const repairMaintenance = maintenance.filter(m => m.status === 'قيد الإصلاح').length;
+    const readyMaintenance = maintenance.filter(m => m.status === 'جاهز للتسليم').length;
+    const deliveredMaintenance = maintenance.filter(m => m.status === 'مسلم').length;
+    
+    const totalRevenue = maintenance.reduce((sum, item) => sum + (item.cost || 0), 0);
+    const avgRepairTime = 2; // أيام - يمكن جعلها ديناميكية
+    
+    // أنواع الأجهزة
+    const deviceTypes = {};
+    maintenance.forEach(item => {
+      const type = item.deviceType || 'غير محدد';
+      deviceTypes[type] = (deviceTypes[type] || 0) + 1;
+    });
+    
+    let deviceTypesHTML = '';
+    for (const [type, count] of Object.entries(deviceTypes)) {
+      deviceTypesHTML += `<p>${type}: <strong>${count}</strong></p>`;
+    }
+    
+    return `
+      <div class="stats-details">
+        <h4 style="margin-bottom: 20px; color: #FF9800;">إحصائيات الصيانة</h4>
+        
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 20px;">
+          <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+            <h3 style="color: #FF9800; margin: 0;">${totalMaintenance}</h3>
+            <p style="margin: 5px 0 0 0; color: #666;">إجمالي الأجهزة</p>
+          </div>
+          <div style="background: #f5f5f5; padding: 15px; border-radius: 8px;">
+            <h3 style="color: #4CAF50; margin: 0;">${formatCurrency(totalRevenue)}</h3>
+            <p style="margin: 5px 0 0 0; color: #666;">إجمالي الإيرادات</p>
+          </div>
+        </div>
+        
+        <h5 style="margin: 20px 0 10px 0;">توزيع الأجهزة حسب الحالة:</h5>
+        <div style="background: #f8f9fa; padding: 15px; border-radius: 8px;">
+          <p>📥 مستلمة: <strong>${receivedMaintenance}</strong></p>
+          <p>🔍 قيد التشخيص: <strong>${diagnosisMaintenance}</strong></p>
+          <p>🔧 قيد الإصلاح: <strong>${repairMaintenance}</strong></p>
+          <p>✅ جاهزة للتسليم: <strong>${readyMaintenance}</strong></p>
+          <p>🚚 مسلمة: <strong>${deliveredMaintenance}</strong></p>
+        </div>
+        
+        <h5 style="margin: 20px 0 10px 0;">توزيع الأجهزة حسب النوع:</h5>
+        <div style="background: #fff3e0; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+          ${deviceTypesHTML}
+        </div>
+        
+        <div style="padding: 15px; background: #fff3e0; border-radius: 8px; border-right: 4px solid #FF9800;">
+          <p style="margin: 0; color: #f57c00;">
+            <i class="fas fa-clock"></i> 
+            <strong>معلومة:</strong> متوسط وقت الإصلاح هو ${avgRepairTime} أيام
+          </p>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    return `<p style="color: #f44336;">خطأ في تحميل إحصائيات الصيانة: ${error.message}</p>`;
+  }
+}
+
+function exportStats() {
+  const statsContent = document.getElementById('stats-content').innerText;
+  const blob = new Blob([statsContent], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  
+  a.href = url;
+  a.download = `تقرير_إحصائيات_${new Date().toLocaleDateString('ar-EG')}.txt`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  
+  showNotification('تم تصدير التقرير بنجاح', 'success');
+}
+
+function closeModal() {
+  document.getElementById('stats-modal').style.display = 'none';
+}
+
+// ========== دوال مساعدة ==========
+function formatNumber(num) {
+  return new Intl.NumberFormat('ar-EG').format(num);
+}
+
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('ar-EG', {
+    style: 'currency',
+    currency: 'SAR',
+    minimumFractionDigits: 2
+  }).format(amount);
+}
+
+function setupScroll() {
+  const scrollTopBtn = document.querySelector('.scroll-top');
+  
+  window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+      scrollTopBtn.style.display = 'flex';
+    } else {
+      scrollTopBtn.style.display = 'none';
+    }
+  });
+}
+
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  });
+}
+
+function subscribeNewsletter() {
+  const emailInput = document.querySelector('.newsletter-form input');
+  const email = emailInput.value.trim();
+  
+  if (!email || !isValidEmail(email)) {
+    showNotification('يرجى إدخال بريد إلكتروني صحيح', 'error');
+    return;
+  }
+  
+  // حفظ البريد محلياً (يمكن إرساله للسيرفر لاحقاً)
+  let subscribers = JSON.parse(localStorage.getItem('newsletter_subscribers') || '[]');
+  if (!subscribers.includes(email)) {
+    subscribers.push(email);
+    localStorage.setItem('newsletter_subscribers', JSON.stringify(subscribers));
+  }
+  
+  emailInput.value = '';
+  showNotification('تم الاشتراك في النشرة بنجاح!', 'success');
+}
+
+function isValidEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+}
+
+function showNotification(message, type) {
+  // إنشاء عنصر التنبيه
+  const notification = document.createElement('div');
+  notification.className = `notification notification-${type}`;
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    padding: 15px 20px;
+    background: ${type === 'success' ? '#4CAF50' : '#f44336'};
+    color: white;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 9999;
+    animation: slideIn 0.3s ease;
+    font-family: 'Cairo', sans-serif;
+    max-width: 300px;
+  `;
+  
+  notification.innerHTML = `
+    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+    ${message}
+  `;
+  
+  document.body.appendChild(notification);
+  
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.3s ease';
+    setTimeout(() => {
+      document.body.removeChild(notification);
+    }, 300);
+  }, 3000);
+}
+
+// أنميشن للتنبيهات
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  
+  @keyframes slideOut {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+`;
+document.head.appendChild(style);
+
+// ========== التأثيرات البصرية ==========
+// تأثيرات عند التمرير
+const observerOptions = {
+  threshold: 0.1,
+  rootMargin: '0px 0px -50px 0px'
+};
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, observerOptions);
+
+// تطبيق التأثيرات على جميع البطاقات
+document.querySelectorAll('.module-card, .feature-item, .stat-card').forEach(card => {
+  card.style.opacity = '0';
+  card.style.transform = 'translateY(20px)';
+  card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+  observer.observe(card);
+});
+</script>
+</body>
+</html>
